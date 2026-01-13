@@ -1,8 +1,8 @@
 {
-  "name": "@signifly/datocms-plugin-signifly-backups",
+  "name": "datocms-plugin-signifly-backups",
   "version": "1.0.0",
   "private": false,
-  "description": "DatoCMS plugin by Signifly for automatic environment backups with scheduled daily, weekly, and monthly snapshots",
+  "description": "DatoCMS plugin for automatic environment backups with scheduled daily, weekly, and monthly snapshots",
   "homepage": "https://github.com/signifly/datocms-plugin-signifly-backups",
   "repository": {
     "type": "git",
@@ -25,7 +25,7 @@
   ],
   "datoCmsPlugin": {
     "title": "Automatic Environment Backups",
-    "previewImage": "docs/preview.png",
+    "previewImage": "docs/demo.mp4",
     "coverImage": "docs/cover.png",
     "entryPoint": "dist/index.html",
     "permissions": []
