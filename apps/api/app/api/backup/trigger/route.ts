@@ -10,6 +10,13 @@ import * as storage from '@lib/storage/kv';
 import { createBackup } from '@lib/datocms/operations';
 import { generateBackupEnvironmentId } from '@lib/backup/scheduler';
 import { getApiToken } from '@lib/auth/verify';
+import { secureCompare } from '@lib/crypto/encryption';
+import {
+  validateProjectId,
+  validateBackupType,
+  validateEnvironmentPrefix,
+  validateNote,
+} from '@lib/validation';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow up to 60 seconds for backup
@@ -22,12 +29,20 @@ export async function POST(
     const { projectId, type = 'manual', options } = body;
     const token = await getApiToken();
 
-    if (!projectId) {
+    // Validate project ID
+    if (!projectId || !validateProjectId(projectId)) {
       return NextResponse.json(
-        { error: 'Missing projectId' },
+        { error: 'Invalid or missing projectId' },
         { status: 400 }
       );
     }
+
+    // Validate backup type
+    const validatedType = validateBackupType(type) || 'manual';
+
+    // Validate and sanitize options
+    const sanitizedPrefix = validateEnvironmentPrefix(options?.environmentPrefix);
+    const sanitizedNote = validateNote(options?.note);
 
     // Get config
     const config = await storage.getConfig(projectId);
@@ -39,8 +54,8 @@ export async function POST(
       );
     }
 
-    // Verify token
-    if (config.apiToken !== token) {
+    // Verify token using timing-safe comparison
+    if (!token || !secureCompare(config.apiToken, token)) {
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
@@ -48,21 +63,21 @@ export async function POST(
     }
 
     // Generate environment ID
-    const prefix = options?.environmentPrefix || `${type}-backup`;
+    const prefix = sanitizedPrefix || `${validatedType}-backup`;
     const targetEnvironmentId = generateBackupEnvironmentId(prefix);
 
     // Create the run record
     const run: BackupRun = {
       id: uuidv4(),
       projectId,
-      type,
+      type: validatedType,
       status: 'in_progress',
       sourceEnvironment: config.sourceEnvironment,
       targetEnvironment: targetEnvironmentId,
       startedAt: new Date().toISOString(),
       metadata: {
         triggeredBy: 'manual',
-        note: options?.note,
+        note: sanitizedNote,
       },
     };
 
@@ -101,7 +116,7 @@ export async function POST(
   } catch (error) {
     console.error('Backup trigger error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to trigger backup' },
+      { error: 'Failed to trigger backup. Please try again.' },
       { status: 500 }
     );
   }

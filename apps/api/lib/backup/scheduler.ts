@@ -1,4 +1,5 @@
 import { parseExpression } from 'cron-parser';
+import { randomBytes } from 'crypto';
 import type { BackupConfig, BackupType, ScheduledBackupType, ScheduleConfig } from '@datocms-backup/shared';
 
 export interface ScheduledBackup {
@@ -71,11 +72,12 @@ export function getScheduledBackups(
   return backups;
 }
 
-// Generate environment ID for a backup
+// Generate environment ID for a backup with unique suffix to prevent collisions
 export function generateBackupEnvironmentId(prefix: string, date: Date = new Date()): string {
   const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
   const timeStr = date.toISOString().split('T')[1].slice(0, 5).replace(':', ''); // HHMM
-  return `${prefix}-${dateStr}-${timeStr}`;
+  const uniqueSuffix = randomBytes(3).toString('hex'); // 6 character hex string
+  return `${prefix}-${dateStr}-${timeStr}-${uniqueSuffix}`;
 }
 
 // Validate cron expression

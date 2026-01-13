@@ -1,4 +1,19 @@
 import { headers } from 'next/headers';
+import { secureCompare } from '@lib/crypto/encryption';
+
+// Extract Bearer token from Authorization header with proper validation
+function extractBearerToken(authHeader: string | null): string | null {
+  if (!authHeader) {
+    return null;
+  }
+
+  const match = authHeader.match(/^Bearer\s+(.+)$/);
+  if (!match || !match[1]) {
+    return null;
+  }
+
+  return match[1];
+}
 
 export async function verifyCronSecret(): Promise<boolean> {
   const headersList = await headers();
@@ -10,7 +25,13 @@ export async function verifyCronSecret(): Promise<boolean> {
     return false;
   }
 
-  return authHeader === `Bearer ${cronSecret}`;
+  const token = extractBearerToken(authHeader);
+  if (!token) {
+    return false;
+  }
+
+  // Use timing-safe comparison to prevent timing attacks
+  return secureCompare(token, cronSecret);
 }
 
 export async function verifyApiSecret(): Promise<boolean> {
@@ -23,28 +44,30 @@ export async function verifyApiSecret(): Promise<boolean> {
     return true;
   }
 
-  return apiSecret === expectedSecret;
+  if (!apiSecret) {
+    return false;
+  }
+
+  // Use timing-safe comparison
+  return secureCompare(apiSecret, expectedSecret);
 }
 
 export async function verifyApiToken(expectedToken: string): Promise<boolean> {
   const headersList = await headers();
   const authHeader = headersList.get('authorization');
 
-  if (!authHeader) {
+  const token = extractBearerToken(authHeader);
+  if (!token) {
     return false;
   }
 
-  const token = authHeader.replace('Bearer ', '');
-  return token === expectedToken;
+  // Use timing-safe comparison
+  return secureCompare(token, expectedToken);
 }
 
 export async function getApiToken(): Promise<string | null> {
   const headersList = await headers();
   const authHeader = headersList.get('authorization');
 
-  if (!authHeader) {
-    return null;
-  }
-
-  return authHeader.replace('Bearer ', '');
+  return extractBearerToken(authHeader);
 }

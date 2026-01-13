@@ -4,6 +4,7 @@ import type {
   BackupRun,
   ProjectRegistration,
 } from '@datocms-backup/shared';
+import { encrypt, decrypt, isEncrypted } from '@lib/crypto/encryption';
 
 // Key patterns
 const keys = {
@@ -14,13 +15,43 @@ const keys = {
   activeProjects: 'projects:active',
 };
 
+// Internal type for stored config with encrypted token
+interface StoredBackupConfig extends Omit<BackupConfig, 'apiToken'> {
+  apiToken: string; // Encrypted
+}
+
 // Config operations
 export async function getConfig(projectId: string): Promise<BackupConfig | null> {
-  return kv.get<BackupConfig>(keys.config(projectId));
+  const stored = await kv.get<StoredBackupConfig>(keys.config(projectId));
+
+  if (!stored) {
+    return null;
+  }
+
+  // Decrypt the API token
+  try {
+    const apiToken = isEncrypted(stored.apiToken)
+      ? decrypt(stored.apiToken)
+      : stored.apiToken; // Handle legacy unencrypted tokens
+
+    return {
+      ...stored,
+      apiToken,
+    };
+  } catch (error) {
+    console.error('Failed to decrypt API token:', error);
+    return null;
+  }
 }
 
 export async function setConfig(config: BackupConfig): Promise<void> {
-  await kv.set(keys.config(config.projectId), config);
+  // Encrypt the API token before storing
+  const storedConfig: StoredBackupConfig = {
+    ...config,
+    apiToken: encrypt(config.apiToken),
+  };
+
+  await kv.set(keys.config(config.projectId), storedConfig);
 }
 
 export async function deleteConfig(projectId: string): Promise<void> {
