@@ -1,0 +1,33 @@
+{
+  "name": "@signifly/datocms-backup-api",
+  "version": "1.0.0",
+  "private": true,
+  "author": {
+    "name": "Signifly",
+    "url": "https://signifly.com"
+  },
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@datocms/cma-client": "^3.4.0",
+    "@vercel/kv": "^3.0.0",
+    "next": "^15.1.3",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "cron-parser": "^4.9.0",
+    "uuid": "^11.0.4"
+  },
+  "devDependencies": {
+    "@datocms-backup/shared": "workspace:*",
+    "@types/node": "^22.10.5",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@types/uuid": "^10.0.0",
+    "typescript": "^5.7.2"
+  }
+}
