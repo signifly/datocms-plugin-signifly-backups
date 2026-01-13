@@ -1,5 +1,5 @@
 import { Button } from 'datocms-react-ui';
-import type { BackupRun } from '@datocms-backup/shared';
+import type { BackupRun } from '@signifly/datocms-backup-shared';
 import RunHistoryTable from '@/components/RunHistoryTable';
 
 type Props = {

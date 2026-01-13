@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import type { HistoryResponse, ApiError } from '@datocms-backup/shared';
+import type { HistoryResponse, ApiError } from '@signifly/datocms-backup-shared';
 import * as storage from '@lib/storage/kv';
 import { getApiToken } from '@lib/auth/verify';
 import { secureCompare } from '@lib/crypto/encryption';

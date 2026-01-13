@@ -3,8 +3,8 @@ import type {
   BackupConfig,
   BackupRun,
   ProjectRegistration,
-} from '@datocms-backup/shared';
-import { encrypt, decrypt, isEncrypted } from '@lib/crypto/encryption';
+} from '@signifly/datocms-backup-shared';
+import { encrypt, decrypt, isEncrypted } from '../crypto/encryption';
 
 // Key patterns
 const keys = {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { API_VERSION } from '@datocms-backup/shared';
-import type { HealthResponse } from '@datocms-backup/shared';
+import { API_VERSION } from '@signifly/datocms-backup-shared';
+import type { HealthResponse } from '@signifly/datocms-backup-shared';
 import { checkKvConnection } from '@lib/storage/kv';
 import { verifyApiSecret } from '@lib/auth/verify';
 

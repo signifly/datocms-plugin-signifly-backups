@@ -5,8 +5,8 @@ type Props = {
   onCancel: () => void;
 };
 
-// Repository URL for the deploy button
-const REPO_URL = 'https://github.com/signifly/datocms-plugin-signifly-backups';
+// Template repository URL for the deploy button
+const REPO_URL = 'https://github.com/signifly/datocms-backup-api-template';
 
 export default function DeployStep({ onNext, onCancel }: Props) {
   const handleDeployClick = () => {
@@ -19,7 +19,7 @@ Generate both with: openssl rand -hex 32`;
 
     const deployUrl = `https://vercel.com/new/clone?repository-url=${encodeURIComponent(
       REPO_URL
-    )}&root-directory=apps/api&project-name=signifly-datocms-backups&env=CRON_SECRET,API_SECRET&envDescription=${encodeURIComponent(
+    )}&project-name=datocms-backup-api&env=CRON_SECRET,API_SECRET&envDescription=${encodeURIComponent(
       envDescription
     )}&envLink=${encodeURIComponent(
       REPO_URL + '#environment-variables'

@@ -7,7 +7,7 @@ import type {
   TriggerBackupResponse,
   HistoryResponse,
   BackupConfig,
-} from '@datocms-backup/shared';
+} from '@signifly/datocms-backup-shared';
 
 export class BackupApiClient {
   private baseUrl: string;

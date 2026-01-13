@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { secureCompare } from '@lib/crypto/encryption';
+import { secureCompare } from '../crypto/encryption';
 
 // Extract Bearer token from Authorization header with proper validation
 function extractBearerToken(authHeader: string | null): string | null {
