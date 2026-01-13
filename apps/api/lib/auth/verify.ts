@@ -13,6 +13,19 @@ export async function verifyCronSecret(): Promise<boolean> {
   return authHeader === `Bearer ${cronSecret}`;
 }
 
+export async function verifyApiSecret(): Promise<boolean> {
+  const headersList = await headers();
+  const apiSecret = headersList.get('x-api-secret');
+  const expectedSecret = process.env.API_SECRET;
+
+  // If API_SECRET is not set, skip this check (backwards compatible)
+  if (!expectedSecret) {
+    return true;
+  }
+
+  return apiSecret === expectedSecret;
+}
+
 export async function verifyApiToken(expectedToken: string): Promise<boolean> {
   const headersList = await headers();
   const authHeader = headersList.get('authorization');

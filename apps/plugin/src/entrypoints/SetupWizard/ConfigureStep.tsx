@@ -8,6 +8,7 @@ import Select from '@/components/Select';
 type Props = {
   apiUrl: string;
   apiToken: string;
+  apiSecret?: string;
   projectId: string;
   onComplete: () => void;
   onBack: () => void;
@@ -22,6 +23,7 @@ type ScheduleState = {
 export default function ConfigureStep({
   apiUrl,
   apiToken,
+  apiSecret,
   projectId,
   onComplete,
   onBack,
@@ -39,7 +41,7 @@ export default function ConfigureStep({
     setError(null);
 
     try {
-      const client = new BackupApiClient(apiUrl, apiToken);
+      const client = new BackupApiClient(apiUrl, apiToken, apiSecret);
 
       await client.updateConfig({
         projectId,

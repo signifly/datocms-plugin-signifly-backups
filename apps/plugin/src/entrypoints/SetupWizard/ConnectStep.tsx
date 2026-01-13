@@ -5,8 +5,10 @@ import { validateApiUrl } from '@/utils/api';
 type Props = {
   apiUrl: string;
   apiToken: string;
+  apiSecret: string;
   onApiUrlChange: (url: string) => void;
   onApiTokenChange: (token: string) => void;
+  onApiSecretChange: (secret: string) => void;
   onNext: () => void;
   onBack: () => void;
   onCancel: () => void;
@@ -15,8 +17,10 @@ type Props = {
 export default function ConnectStep({
   apiUrl,
   apiToken,
+  apiSecret,
   onApiUrlChange,
   onApiTokenChange,
+  onApiSecretChange,
   onNext,
   onBack,
   onCancel,
@@ -24,6 +28,7 @@ export default function ConnectStep({
   const [validating, setValidating] = useState(false);
   const [urlError, setUrlError] = useState<string | null>(null);
   const [validated, setValidated] = useState(false);
+  const [kvConnected, setKvConnected] = useState(false);
 
   const handleValidate = async () => {
     if (!apiUrl) {
@@ -34,14 +39,15 @@ export default function ConnectStep({
     setValidating(true);
     setUrlError(null);
 
-    const isValid = await validateApiUrl(apiUrl);
+    const result = await validateApiUrl(apiUrl, apiSecret || undefined);
 
     setValidating(false);
 
-    if (isValid) {
+    if (result.success) {
       setValidated(true);
+      setKvConnected(result.kvConnected ?? false);
     } else {
-      setUrlError('Could not connect to the backup service. Please check the URL and try again.');
+      setUrlError(result.error || 'Could not connect to the backup service.');
     }
   };
 
@@ -82,7 +88,7 @@ export default function ConnectStep({
         <div style={{ marginTop: '0.5rem' }}>
           {validated ? (
             <span style={{ color: '#2e7d32', fontSize: '0.9rem' }}>
-              ✓ Connection verified
+              ✓ Connection verified{kvConnected ? ' (KV storage connected)' : ''}
             </span>
           ) : (
             <Button
@@ -95,6 +101,21 @@ export default function ConnectStep({
             </Button>
           )}
         </div>
+      </div>
+
+      <div style={{ marginBottom: '1.5rem' }}>
+        <TextField
+          id="apiSecret"
+          name="apiSecret"
+          label="API Secret (optional)"
+          placeholder="Enter your API_SECRET from Vercel"
+          value={apiSecret}
+          onChange={(value) => {
+            onApiSecretChange(value);
+            setValidated(false);
+          }}
+          hint="Only required if you set API_SECRET in your Vercel environment variables"
+        />
       </div>
 
       <div style={{ marginBottom: '1.5rem' }}>

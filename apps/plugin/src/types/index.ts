@@ -6,6 +6,7 @@ export interface PluginParameters {
   apiUrl?: string;
   projectId?: string;
   apiToken?: string;
+  apiSecret?: string;
 }
 
 export type InstallationStep = 'deploy' | 'connect' | 'configure' | 'complete';

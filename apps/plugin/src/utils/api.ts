@@ -12,10 +12,12 @@ import type {
 export class BackupApiClient {
   private baseUrl: string;
   private apiToken: string;
+  private apiSecret?: string;
 
-  constructor(baseUrl: string, apiToken: string) {
+  constructor(baseUrl: string, apiToken: string, apiSecret?: string) {
     this.baseUrl = baseUrl.replace(/\/$/, '');
     this.apiToken = apiToken;
+    this.apiSecret = apiSecret;
   }
 
   private async request<T>(
@@ -24,11 +26,19 @@ export class BackupApiClient {
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${this.apiToken}`,
+    };
+
+    if (this.apiSecret) {
+      headers['X-API-Secret'] = this.apiSecret;
+    }
+
     const response = await fetch(url, {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.apiToken}`,
+        ...headers,
         ...options.headers,
       },
     });
@@ -42,7 +52,11 @@ export class BackupApiClient {
   }
 
   async checkHealth(): Promise<HealthResponse> {
-    const response = await fetch(`${this.baseUrl}/api/health`);
+    const headers: Record<string, string> = {};
+    if (this.apiSecret) {
+      headers['X-API-Secret'] = this.apiSecret;
+    }
+    const response = await fetch(`${this.baseUrl}/api/health`, { headers });
     return response.json();
   }
 
@@ -79,13 +93,40 @@ export class BackupApiClient {
   }
 }
 
+// Validation result with more details
+export type ValidationResult = {
+  success: boolean;
+  error?: string;
+  kvConnected?: boolean;
+};
+
 // Validate API URL by checking health endpoint
-export async function validateApiUrl(url: string): Promise<boolean> {
+export async function validateApiUrl(url: string, apiSecret?: string): Promise<ValidationResult> {
   try {
-    const response = await fetch(`${url.replace(/\/$/, '')}/api/health`);
+    const headers: Record<string, string> = {};
+    if (apiSecret) {
+      headers['X-API-Secret'] = apiSecret;
+    }
+
+    const response = await fetch(`${url.replace(/\/$/, '')}/api/health`, { headers });
+
+    if (response.status === 401) {
+      return { success: false, error: 'Invalid API Secret. Please check your API_SECRET matches the one in Vercel.' };
+    }
+
+    if (!response.ok) {
+      return { success: false, error: `Server returned ${response.status}: ${response.statusText}` };
+    }
+
     const data: HealthResponse = await response.json();
-    return data.status === 'ok';
-  } catch {
-    return false;
+
+    if (data.status === 'ok') {
+      return { success: true, kvConnected: data.kvConnected };
+    } else {
+      return { success: false, error: 'Service is running but KV storage is not connected', kvConnected: false };
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return { success: false, error: `Connection failed: ${message}` };
   }
 }

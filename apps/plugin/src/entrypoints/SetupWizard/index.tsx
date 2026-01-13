@@ -16,12 +16,14 @@ export default function SetupWizard({ ctx, isModal }: Props) {
   const [step, setStep] = useState<InstallationStep>('deploy');
   const [apiUrl, setApiUrl] = useState(params.apiUrl || '');
   const [apiToken, setApiToken] = useState('');
+  const [apiSecret, setApiSecret] = useState(params.apiSecret || '');
 
   const handleComplete = async () => {
     await ctx.updatePluginParameters({
       installationState: 'installed',
       apiUrl,
       apiToken,
+      apiSecret: apiSecret || undefined,
       projectId: ctx.site.id,
     });
 
@@ -102,8 +104,10 @@ export default function SetupWizard({ ctx, isModal }: Props) {
           <ConnectStep
             apiUrl={apiUrl}
             apiToken={apiToken}
+            apiSecret={apiSecret}
             onApiUrlChange={setApiUrl}
             onApiTokenChange={setApiToken}
+            onApiSecretChange={setApiSecret}
             onNext={() => setStep('configure')}
             onBack={() => setStep('deploy')}
             onCancel={handleCancel}
@@ -114,6 +118,7 @@ export default function SetupWizard({ ctx, isModal }: Props) {
           <ConfigureStep
             apiUrl={apiUrl}
             apiToken={apiToken}
+            apiSecret={apiSecret}
             projectId={ctx.site.id}
             onComplete={handleComplete}
             onBack={() => setStep('connect')}

@@ -11,11 +11,14 @@ const REPO_URL = 'https://github.com/signifly/datocms-plugin-signifly-backups';
 export default function DeployStep({ onNext, onCancel }: Props) {
   const handleDeployClick = () => {
     // Vercel deploy URL with repository
+    const stores = JSON.stringify([{ type: 'kv' }]);
     const deployUrl = `https://vercel.com/new/clone?repository-url=${encodeURIComponent(
       REPO_URL
-    )}&root-directory=apps/api&project-name=datocms-backups&env=CRON_SECRET&envDescription=A%20secret%20key%20for%20securing%20cron%20endpoints&envLink=${encodeURIComponent(
+    )}&root-directory=apps/api&project-name=signifly-datocms-backups&env=CRON_SECRET&envDescription=${encodeURIComponent(
+      'A secret key for securing cron endpoints. Generate with: openssl rand -hex 32'
+    )}&envLink=${encodeURIComponent(
       REPO_URL + '#environment-variables'
-    )}&stores=[{"type":"kv"}]`;
+    )}&stores=${encodeURIComponent(stores)}`;
 
     window.open(deployUrl, '_blank');
   };
@@ -50,8 +53,11 @@ export default function DeployStep({ onNext, onCancel }: Props) {
           <li style={{ marginBottom: '0.5rem' }}>
             Vercel KV storage will be automatically provisioned
           </li>
-          <li>
+          <li style={{ marginBottom: '0.5rem' }}>
             Copy your deployment URL after it's complete
+          </li>
+          <li>
+            <strong>Important:</strong> Disable Deployment Protection in Vercel Project Settings → Deployment Protection → Set to "No Protection"
           </li>
         </ol>
       </div>
