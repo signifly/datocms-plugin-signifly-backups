@@ -74,8 +74,8 @@ importers:
         version: 19.2.3(react@19.2.3)
     devDependencies:
       '@casperjuel/datocms-backup-shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
+        specifier: ^1.0.1
+        version: 1.0.1
       '@types/react':
         specifier: ^19.0.2
         version: 19.2.8
