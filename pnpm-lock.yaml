@@ -18,8 +18,8 @@ importers:
   apps/api:
     dependencies:
       '@casperjuel/datocms-backup-shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
+        specifier: ^1.0.0
+        version: 1.0.1
       '@datocms/cma-client':
         specifier: ^3.4.0
         version: 3.4.5
@@ -186,6 +186,9 @@ packages:
   '@babel/types@7.28.6':
     resolution: {integrity: sha512-0ZrskXVEHSWIqZM/sQZ4EV3jZJXRkio/WCxaqKZP1g//CEWEPSfeZFcms4XeKBCHU0ZKnIkdJeU/kF+eRp5lBg==}
     engines: {node: '>=6.9.0'}
+
+  '@casperjuel/datocms-backup-shared@1.0.1':
+    resolution: {integrity: sha512-mSrjVxN1mAJOJGun4MWLlafidNEL1LA1hRumVN9WOR1SKdfdeJO0+DOTbni5GNqqqTE9DYU4udmEEWVWhKE+/w==}
 
   '@datocms/cma-client@3.4.5':
     resolution: {integrity: sha512-ddwqN1c0gNf6D79GjxkcZZXKqGk4541GTZfrpXUnU5H0NQJoh1avkCqaecaI9CybJClYwKmoEWgcXZYWjednCQ==}
@@ -1389,6 +1392,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@casperjuel/datocms-backup-shared@1.0.1': {}
 
   '@datocms/cma-client@3.4.5':
     dependencies:
