@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Button, Spinner, SwitchField, TextField } from 'datocms-react-ui';
 import { BackupApiClient } from '@/utils/api';
-import { DEFAULT_SCHEDULES, CRON_PRESETS } from '@signifly/datocms-backup-shared';
-import type { ScheduleConfig } from '@signifly/datocms-backup-shared';
+import { DEFAULT_SCHEDULES, CRON_PRESETS } from '@casperjuel/datocms-backup-shared';
+import type { ScheduleConfig } from '@casperjuel/datocms-backup-shared';
 import Select from '@/components/Select';
 
 type Props = {

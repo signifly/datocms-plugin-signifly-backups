@@ -1,6 +1,6 @@
 import { parseExpression } from 'cron-parser';
 import { randomBytes } from 'crypto';
-import type { BackupConfig, BackupType, ScheduledBackupType, ScheduleConfig } from '@signifly/datocms-backup-shared';
+import type { BackupConfig, BackupType, ScheduledBackupType, ScheduleConfig } from '@casperjuel/datocms-backup-shared';
 
 export interface ScheduledBackup {
   type: ScheduledBackupType;

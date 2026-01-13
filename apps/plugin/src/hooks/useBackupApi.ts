@@ -5,7 +5,7 @@ import type {
   BackupRun,
   HistoryResponse,
   TriggerBackupResponse,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 
 export function useBackupApi(apiUrl: string | undefined, apiToken: string | undefined) {
   const [client, setClient] = useState<BackupApiClient | null>(null);

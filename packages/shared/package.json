@@ -1,6 +1,6 @@
 {
-  "name": "@signifly/datocms-backup-shared",
-  "version": "1.0.0",
+  "name": "@casperjuel/datocms-backup-shared",
+  "version": "1.0.1",
   "private": false,
   "description": "Shared types and constants for DatoCMS backup system",
   "homepage": "https://github.com/signifly/datocms-plugin-signifly-backups",
@@ -38,7 +38,8 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

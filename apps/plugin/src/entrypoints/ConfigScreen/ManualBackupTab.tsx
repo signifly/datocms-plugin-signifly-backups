@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Button, Spinner, TextField } from 'datocms-react-ui';
-import type { TriggerBackupResponse } from '@signifly/datocms-backup-shared';
+import type { TriggerBackupResponse } from '@casperjuel/datocms-backup-shared';
 import StatusBadge from '@/components/StatusBadge';
 
 type Props = {

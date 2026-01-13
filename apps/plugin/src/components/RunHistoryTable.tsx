@@ -1,6 +1,6 @@
 import { Button, Spinner } from 'datocms-react-ui';
-import type { BackupRun } from '@signifly/datocms-backup-shared';
-import { BACKUP_TYPE_LABELS } from '@signifly/datocms-backup-shared';
+import type { BackupRun } from '@casperjuel/datocms-backup-shared';
+import { BACKUP_TYPE_LABELS } from '@casperjuel/datocms-backup-shared';
 import StatusBadge from './StatusBadge';
 
 type Props = {

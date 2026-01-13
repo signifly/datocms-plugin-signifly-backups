@@ -1,4 +1,4 @@
-import type { BackupConfig, ScheduledBackupType } from '@signifly/datocms-backup-shared';
+import type { BackupConfig, ScheduledBackupType } from '@casperjuel/datocms-backup-shared';
 import { cleanupOldBackups } from '../datocms/operations';
 import * as storage from '../storage/kv';
 

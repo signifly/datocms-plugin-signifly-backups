@@ -1,5 +1,5 @@
-import type { BackupStatus } from '@signifly/datocms-backup-shared';
-import { STATUS_LABELS } from '@signifly/datocms-backup-shared';
+import type { BackupStatus } from '@casperjuel/datocms-backup-shared';
+import { STATUS_LABELS } from '@casperjuel/datocms-backup-shared';
 
 type Props = {
   status: BackupStatus;

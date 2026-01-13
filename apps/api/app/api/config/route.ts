@@ -5,8 +5,8 @@ import type {
   UpdateConfigRequest,
   UpdateConfigResponse,
   ApiError,
-} from '@signifly/datocms-backup-shared';
-import { DEFAULT_SCHEDULES } from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
+import { DEFAULT_SCHEDULES } from '@casperjuel/datocms-backup-shared';
 import * as storage from '@lib/storage/kv';
 import { getApiToken } from '@lib/auth/verify';
 import { secureCompare } from '@lib/crypto/encryption';

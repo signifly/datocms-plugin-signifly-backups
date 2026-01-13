@@ -5,7 +5,7 @@ import type {
   TriggerBackupRequest,
   TriggerBackupResponse,
   ApiError,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 import * as storage from '@lib/storage/kv';
 import { createBackup } from '@lib/datocms/operations';
 import { generateBackupEnvironmentId } from '@lib/backup/scheduler';

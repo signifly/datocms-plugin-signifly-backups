@@ -3,7 +3,7 @@ import type {
   BackupConfig,
   BackupRun,
   ProjectRegistration,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 import { encrypt, decrypt, isEncrypted } from '../crypto/encryption';
 
 // Key patterns

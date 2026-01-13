@@ -17,12 +17,12 @@ importers:
 
   apps/api:
     dependencies:
+      '@casperjuel/datocms-backup-shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@datocms/cma-client':
         specifier: ^3.4.0
         version: 3.4.5
-      '@signifly/datocms-backup-shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@vercel/kv':
         specifier: ^3.0.0
         version: 3.0.0
@@ -73,7 +73,7 @@ importers:
         specifier: ^19.0.0
         version: 19.2.3(react@19.2.3)
     devDependencies:
-      '@signifly/datocms-backup-shared':
+      '@casperjuel/datocms-backup-shared':
         specifier: workspace:*
         version: link:../../packages/shared
       '@types/react':

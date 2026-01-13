@@ -5,7 +5,7 @@ import type {
   BackupType,
   CronBackupResponse,
   CronBackupResult,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 import * as storage from '@lib/storage/kv';
 import { verifyCronSecret } from '@lib/auth/verify';
 import { createBackup } from '@lib/datocms/operations';

@@ -1,4 +1,4 @@
-import type { BackupType } from '@signifly/datocms-backup-shared';
+import type { BackupType } from '@casperjuel/datocms-backup-shared';
 
 // Constants for validation
 export const MAX_LIMIT = 100;

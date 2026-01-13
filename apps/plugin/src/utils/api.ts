@@ -7,7 +7,7 @@ import type {
   TriggerBackupResponse,
   HistoryResponse,
   BackupConfig,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 
 export class BackupApiClient {
   private baseUrl: string;

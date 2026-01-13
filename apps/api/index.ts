@@ -1,4 +1,4 @@
-// Main entry point for @signifly/datocms-backup-api
+// Main entry point for @casperjuel/datocms-backup-api
 
 // Re-export everything from lib modules
 export * from './lib/storage/kv';
@@ -16,7 +16,7 @@ export {
   API_VERSION,
   DEFAULT_SCHEDULES,
   CRON_PRESETS,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
 
 export type {
   BackupConfig,
@@ -35,4 +35,4 @@ export type {
   CronBackupResponse,
   CronBackupResult,
   ProjectRegistration,
-} from '@signifly/datocms-backup-shared';
+} from '@casperjuel/datocms-backup-shared';
