@@ -1,9 +1,15 @@
 {
-  "name": "@signifly/datocms-backup-plugin",
+  "name": "@signifly/datocms-plugin-signifly-backups",
   "version": "1.0.0",
   "private": false,
-  "description": "DatoCMS plugin by Signifly for automatic environment backups",
+  "description": "DatoCMS plugin by Signifly for automatic environment backups with scheduled daily, weekly, and monthly snapshots",
   "homepage": "https://github.com/signifly/datocms-plugin-signifly-backups",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/signifly/datocms-plugin-signifly-backups.git",
+    "directory": "apps/plugin"
+  },
+  "license": "MIT",
   "author": {
     "name": "Signifly",
     "url": "https://signifly.com"
@@ -14,21 +20,27 @@
     "backup",
     "environment",
     "automatic",
+    "scheduled",
     "signifly"
   ],
   "datoCmsPlugin": {
-    "title": "Signifly Automatic Backups",
-    "previewImage": "docs/demo.mp4",
+    "title": "Automatic Environment Backups",
+    "previewImage": "docs/preview.png",
     "coverImage": "docs/cover.png",
     "entryPoint": "dist/index.html",
     "permissions": []
   },
+  "files": [
+    "dist",
+    "docs"
+  ],
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "datocms-plugin-sdk": "^2.1.1",
