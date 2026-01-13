@@ -12,10 +12,15 @@ export default function DeployStep({ onNext, onCancel }: Props) {
   const handleDeployClick = () => {
     // Vercel deploy URL with repository
     const stores = JSON.stringify([{ type: 'kv' }]);
+    const envDescription = `CRON_SECRET: A secret key for securing cron endpoints.
+API_SECRET: A secret key for securing API endpoints (used by the plugin).
+
+Generate both with: openssl rand -hex 32`;
+
     const deployUrl = `https://vercel.com/new/clone?repository-url=${encodeURIComponent(
       REPO_URL
-    )}&root-directory=apps/api&project-name=signifly-datocms-backups&env=CRON_SECRET&envDescription=${encodeURIComponent(
-      'A secret key for securing cron endpoints. Generate with: openssl rand -hex 32'
+    )}&root-directory=apps/api&project-name=signifly-datocms-backups&env=CRON_SECRET,API_SECRET&envDescription=${encodeURIComponent(
+      envDescription
     )}&envLink=${encodeURIComponent(
       REPO_URL + '#environment-variables'
     )}&stores=${encodeURIComponent(stores)}`;
@@ -48,16 +53,13 @@ export default function DeployStep({ onNext, onCancel }: Props) {
             Connect your GitHub account (if not already)
           </li>
           <li style={{ marginBottom: '0.5rem' }}>
-            Set a <code>CRON_SECRET</code> - generate a secure random string
+            Set <code>CRON_SECRET</code> and <code>API_SECRET</code> - generate secure random strings
           </li>
           <li style={{ marginBottom: '0.5rem' }}>
             Vercel KV storage will be automatically provisioned
           </li>
           <li style={{ marginBottom: '0.5rem' }}>
-            Copy your deployment URL after it's complete
-          </li>
-          <li>
-            <strong>Important:</strong> Disable Deployment Protection in Vercel Project Settings → Deployment Protection → Set to "No Protection"
+            Copy your deployment URL and <code>API_SECRET</code> after it's complete
           </li>
         </ol>
       </div>
