@@ -51,6 +51,14 @@ export async function environmentExists(
   return env !== null;
 }
 
+// Get the primary environment ID
+export async function getPrimaryEnvironment(
+  client: DatoCmsClient
+): Promise<Environment | null> {
+  const environments = await listEnvironments(client);
+  return environments.find((env) => env.meta.primary) || null;
+}
+
 // Create a backup by forking the source environment
 export async function createBackup(
   apiToken: string,
@@ -60,15 +68,32 @@ export async function createBackup(
   try {
     const client = createDatoCmsClient(apiToken);
 
-    // Check if target already exists
-    const exists = await environmentExists(client, targetEnvironmentId);
-    if (exists) {
+    // Determine actual source environment
+    let actualSource = sourceEnvironment;
+
+    // Check if specified source exists
+    const sourceExists = await environmentExists(client, sourceEnvironment);
+    if (!sourceExists) {
+      // Fallback to primary environment
+      const primary = await getPrimaryEnvironment(client);
+      if (!primary) {
+        return {
+          success: false,
+          error: `Source environment "${sourceEnvironment}" not found and no primary environment available`,
+        };
+      }
+      actualSource = primary.id;
+    }
+
+    // Check if target already exists (shouldn't happen with UUID suffix, but just in case)
+    const targetExists = await environmentExists(client, targetEnvironmentId);
+    if (targetExists) {
       // Delete existing backup with same name
       await deleteEnvironment(client, targetEnvironmentId);
     }
 
     // Fork the source environment
-    const newEnv = await forkEnvironment(client, sourceEnvironment, targetEnvironmentId);
+    const newEnv = await forkEnvironment(client, actualSource, targetEnvironmentId);
 
     return {
       success: true,
