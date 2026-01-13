@@ -12,7 +12,7 @@ export default function Home() {
         <li><code>GET /api/cron/backup</code> - Cron endpoint (Vercel cron only)</li>
       </ul>
       <p>
-        <a href="https://github.com/your-username/datocms-plugin-automatic-environment-backups">
+        <a href="https://github.com/signifly/datocms-plugin-signifly-backups">
           Documentation
         </a>
       </p>
