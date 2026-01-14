@@ -60,6 +60,7 @@ export async function getPrimaryEnvironment(
 }
 
 // Create a backup by forking the source environment
+// Note: DatoCMS fork is synchronous and can take 3-5 minutes for large projects
 export async function createBackup(
   apiToken: string,
   sourceEnvironment: string,
@@ -68,41 +69,40 @@ export async function createBackup(
   try {
     const client = createDatoCmsClient(apiToken);
 
-    // Determine actual source environment
-    let actualSource = sourceEnvironment;
-
-    // Check if specified source exists
-    const sourceExists = await environmentExists(client, sourceEnvironment);
-    if (!sourceExists) {
-      // Fallback to primary environment
-      const primary = await getPrimaryEnvironment(client);
-      if (!primary) {
-        return {
-          success: false,
-          error: `Source environment "${sourceEnvironment}" not found and no primary environment available`,
-        };
-      }
-      actualSource = primary.id;
-    }
-
-    // Check if target already exists (shouldn't happen with UUID suffix, but just in case)
-    const targetExists = await environmentExists(client, targetEnvironmentId);
-    if (targetExists) {
-      // Delete existing backup with same name
-      await deleteEnvironment(client, targetEnvironmentId);
-    }
-
-    // Fork the source environment
-    const newEnv = await forkEnvironment(client, actualSource, targetEnvironmentId);
+    // Fork the source environment - DatoCMS handles the rest
+    // We don't check if source exists first to save time; fork will fail if it doesn't
+    const newEnv = await forkEnvironment(client, sourceEnvironment, targetEnvironmentId);
 
     return {
       success: true,
       environmentId: newEnv.id,
     };
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
+    // If source doesn't exist, try primary environment
+    if (errorMessage.includes('404') || errorMessage.includes('not found')) {
+      try {
+        const client = createDatoCmsClient(apiToken);
+        const primary = await getPrimaryEnvironment(client);
+        if (primary) {
+          const newEnv = await forkEnvironment(client, primary.id, targetEnvironmentId);
+          return {
+            success: true,
+            environmentId: newEnv.id,
+          };
+        }
+      } catch (retryError) {
+        return {
+          success: false,
+          error: retryError instanceof Error ? retryError.message : 'Unknown error',
+        };
+      }
+    }
+
     return {
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: errorMessage,
     };
   }
 }
