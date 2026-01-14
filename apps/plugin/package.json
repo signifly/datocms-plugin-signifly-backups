@@ -1,6 +1,6 @@
 {
   "name": "datocms-plugin-signifly-backups",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "private": false,
   "description": "Automatically backup your DatoCMS environments on a schedule. Deploy your own backend to Vercel and configure daily, weekly, and monthly backups with customizable retention policies.",
   "homepage": "https://github.com/signifly/datocms-plugin-signifly-backups",
@@ -25,14 +25,13 @@
   ],
   "datoCmsPlugin": {
     "title": "Automatic Environment Backups @ Vercel",
-    "previewImage": "docs/demo.mp4",
     "coverImage": "docs/cover.png",
     "entryPoint": "dist/index.html",
     "permissions": []
   },
   "files": [
     "dist",
-    "docs",
+    "docs/cover.png",
     "README.md"
   ],
   "type": "module",
