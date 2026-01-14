@@ -44,6 +44,10 @@ Install from the [DatoCMS marketplace](https://www.datocms.com/marketplace/plugi
 - [GitHub Issues](https://github.com/signifly/datocms-plugin-signifly-backups/issues)
 - [Documentation](https://github.com/signifly/datocms-plugin-signifly-backups)
 
+## Credits
+
+This plugin is an extended version of [datocms-plugin-automatic-environment-backups](https://www.npmjs.com/package/datocms-plugin-automatic-environment-backups) by [marcelofinaworknate](https://github.com/marcelofinaworknate). We've added Vercel deployment, backup history tracking, and retention policies.
+
 ## About Signifly
 
 [Signifly](https://signifly.com) is a digital agency specializing in strategy, design, and technology. We build digital products and experiences that make a difference.
