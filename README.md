@@ -1,3 +1,5 @@
+![Automatic Environment Backups @ Vercel](apps/plugin/docs/cover.png)
+
 # Signifly DatoCMS Automatic Backups
 
 A DatoCMS plugin by [Signifly](https://signifly.com) that automatically creates scheduled backups of your environments with full history tracking and configurable retention policies.
