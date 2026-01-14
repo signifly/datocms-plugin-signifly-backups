@@ -1,6 +1,6 @@
 {
   "name": "@casperjuel/datocms-backup-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
   "description": "Backend API for DatoCMS automatic environment backups",
   "homepage": "https://github.com/signifly/datocms-plugin-signifly-backups",
