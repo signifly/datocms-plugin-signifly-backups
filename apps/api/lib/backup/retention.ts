@@ -2,6 +2,13 @@ import type { BackupConfig, ScheduledBackupType } from '@casperjuel/datocms-back
 import { cleanupOldBackups } from '../datocms/operations';
 import * as storage from '../storage/kv';
 
+// Max age in days for each backup type (delete older backups regardless of count)
+const MAX_BACKUP_AGE_DAYS: Record<ScheduledBackupType, number> = {
+  daily: 2,
+  weekly: 30,
+  monthly: 365,
+};
+
 export interface RetentionResult {
   type: ScheduledBackupType;
   deletedEnvironments: string[];
@@ -29,10 +36,12 @@ export async function enforceRetention(
 
   try {
     // Clean up old DatoCMS environments
+    const maxAgeDays = MAX_BACKUP_AGE_DAYS[type];
     const { deleted, errors } = await cleanupOldBackups(
       config.apiToken,
       schedule.prefix,
-      schedule.retentionCount
+      schedule.retentionCount,
+      maxAgeDays
     );
 
     result.deletedEnvironments = deleted;

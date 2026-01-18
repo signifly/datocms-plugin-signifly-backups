@@ -108,10 +108,12 @@ export async function createBackup(
 }
 
 // Clean up old backup environments based on retention policy
+// Deletes environments that exceed keepCount OR are older than maxAgeDays
 export async function cleanupOldBackups(
   apiToken: string,
   prefix: string,
-  keepCount: number
+  keepCount: number,
+  maxAgeDays?: number
 ): Promise<{ deleted: string[]; errors: string[] }> {
   const client = createDatoCmsClient(apiToken);
   const environments = await listEnvironments(client);
@@ -125,9 +127,20 @@ export async function cleanupOldBackups(
 
   const deleted: string[] = [];
   const errors: string[] = [];
+  const now = Date.now();
+  const maxAgeMs = maxAgeDays ? maxAgeDays * 24 * 60 * 60 * 1000 : null;
 
-  // Keep the most recent ones, delete the rest
-  const toDelete = backupEnvs.slice(keepCount);
+  // Determine which to delete: beyond keepCount OR older than maxAge
+  const toDelete = backupEnvs.filter((env, index) => {
+    // Always delete if beyond retention count
+    if (index >= keepCount) return true;
+    // Also delete if older than max age (even if within count)
+    if (maxAgeMs) {
+      const age = now - new Date(env.meta.created_at).getTime();
+      if (age > maxAgeMs) return true;
+    }
+    return false;
+  });
 
   for (const env of toDelete) {
     try {

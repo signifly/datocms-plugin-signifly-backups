@@ -2,7 +2,7 @@ export const DEFAULT_SCHEDULES = {
   daily: {
     enabled: true,
     cronExpression: '0 2 * * *', // 2 AM UTC daily
-    retentionCount: 7,
+    retentionCount: 2,
     prefix: 'daily-backup',
   },
   weekly: {
@@ -17,6 +17,13 @@ export const DEFAULT_SCHEDULES = {
     retentionCount: 3,
     prefix: 'monthly-backup',
   },
+} as const;
+
+// Max age in days for each backup type (delete older backups regardless of count)
+export const MAX_BACKUP_AGE_DAYS = {
+  daily: 2,
+  weekly: 30,
+  monthly: 365,
 } as const;
 
 export const CRON_PRESETS = [
