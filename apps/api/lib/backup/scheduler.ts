@@ -7,30 +7,30 @@ export interface ScheduledBackup {
   schedule: ScheduleConfig;
 }
 
-// Check if a backup should run based on cron expression
-export function shouldRunBackup(
-  cronExpression: string,
-  lastRun: Date | null,
+// Check if a backup was already triggered within its period
+// Daily: once per calendar day (UTC)
+// Weekly: once per 7 days
+// Monthly: once per 30 days
+export function wasAlreadyTriggered(
+  type: ScheduledBackupType,
+  lastTriggered: Date | null,
   now: Date = new Date()
 ): boolean {
-  try {
-    const interval = parseExpression(cronExpression, {
-      currentDate: now,
-      utc: true,
-    });
+  if (!lastTriggered) return false;
 
-    // Get the previous scheduled time
-    const prev = interval.prev().toDate();
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const timeSinceLastRun = now.getTime() - lastTriggered.getTime();
 
-    // If no last run, should run
-    if (!lastRun) {
-      return true;
-    }
-
-    // If the previous scheduled time is after the last run, should run
-    return prev > lastRun;
-  } catch {
-    return false;
+  switch (type) {
+    case 'daily':
+      // Check if last run was on same calendar day (UTC)
+      return lastTriggered.toISOString().split('T')[0] === now.toISOString().split('T')[0];
+    case 'weekly':
+      return timeSinceLastRun < 7 * msPerDay;
+    case 'monthly':
+      return timeSinceLastRun < 30 * msPerDay;
+    default:
+      return false;
   }
 }
 
@@ -48,6 +48,7 @@ export function getNextRunTime(cronExpression: string, now: Date = new Date()): 
 }
 
 // Determine which backups need to run for a project
+// Simple logic: if enabled and not already triggered this period, run it
 export function getScheduledBackups(
   config: BackupConfig,
   lastRuns: Record<BackupType, Date | null>
@@ -63,7 +64,8 @@ export function getScheduledBackups(
     if (schedule?.enabled) {
       const lastRun = lastRuns[type];
 
-      if (shouldRunBackup(schedule.cronExpression, lastRun, now)) {
+      // Only run if we haven't already triggered one this period
+      if (!wasAlreadyTriggered(type, lastRun, now)) {
         backups.push({ type, schedule });
       }
     }
