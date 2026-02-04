@@ -10,6 +10,19 @@ type Props = {
   onLoadMore: () => void;
 };
 
+// If in_progress for more than 5 minutes, show as "triggered" (async completion)
+const TRIGGERED_THRESHOLD_MS = 5 * 60 * 1000;
+
+function getDisplayStatus(run: BackupRun): 'pending' | 'in_progress' | 'triggered' | 'completed' | 'failed' | 'cleaned' {
+  if (run.status === 'in_progress') {
+    const elapsed = Date.now() - new Date(run.startedAt).getTime();
+    if (elapsed > TRIGGERED_THRESHOLD_MS) {
+      return 'triggered';
+    }
+  }
+  return run.status;
+}
+
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
   return date.toLocaleDateString('en-US', {
@@ -86,7 +99,7 @@ export default function RunHistoryTable({ runs, loading, hasMore, onLoadMore }: 
                 </code>
               </td>
               <td style={{ padding: '0.75rem' }}>
-                <StatusBadge status={run.status} />
+                <StatusBadge status={getDisplayStatus(run)} />
               </td>
               <td style={{ padding: '0.75rem', fontSize: '0.9rem', color: '#666' }}>
                 <span title={formatDate(run.startedAt)}>

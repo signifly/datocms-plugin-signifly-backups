@@ -168,6 +168,21 @@ export async function deleteOldRuns(projectId: string, keepCount: number): Promi
   return toDelete;
 }
 
+// Get runs that are stuck in_progress for a project
+export async function getInProgressRuns(
+  projectId: string,
+  olderThanMinutes = 5
+): Promise<BackupRun[]> {
+  const { runs } = await getRunHistory(projectId, 100, 0);
+  const cutoff = Date.now() - olderThanMinutes * 60 * 1000;
+
+  return runs.filter(
+    (run) =>
+      run.status === 'in_progress' &&
+      new Date(run.startedAt).getTime() < cutoff
+  );
+}
+
 // Health check
 export async function checkKvConnection(): Promise<boolean> {
   try {

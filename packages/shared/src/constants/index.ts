@@ -41,6 +41,7 @@ export const CRON_PRESETS = [
 export const STATUS_LABELS: Record<string, string> = {
   pending: 'Pending',
   in_progress: 'In Progress',
+  triggered: 'Triggered',
   completed: 'Completed',
   failed: 'Failed',
   cleaned: 'Cleaned',

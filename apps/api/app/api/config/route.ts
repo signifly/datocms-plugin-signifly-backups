@@ -8,7 +8,7 @@ import type {
 } from '@casperjuel/datocms-backup-shared';
 import { DEFAULT_SCHEDULES } from '@casperjuel/datocms-backup-shared';
 import * as storage from '@lib/storage/kv';
-import { getApiToken } from '@lib/auth/verify';
+import { getApiToken, verifyApiSecret } from '@lib/auth/verify';
 import { secureCompare } from '@lib/crypto/encryption';
 import { validateProjectId, validateApiTokenFormat } from '@lib/validation';
 
@@ -47,6 +47,15 @@ export async function PUT(
   request: NextRequest
 ): Promise<NextResponse<UpdateConfigResponse | ApiError>> {
   try {
+    // Verify API secret if configured
+    const isSecretValid = await verifyApiSecret();
+    if (!isSecretValid) {
+      return NextResponse.json(
+        { error: 'Invalid API secret' },
+        { status: 401 }
+      );
+    }
+
     const body = (await request.json()) as UpdateConfigRequest;
     const { projectId, apiToken, config: configUpdates } = body;
 
@@ -58,21 +67,45 @@ export async function PUT(
       );
     }
 
-    // Validate API token format
-    if (!apiToken || !validateApiTokenFormat(apiToken)) {
+    // Get existing config
+    const existingConfig = await storage.getConfig(projectId);
+
+    // For updates to existing config, verify the caller has the correct token
+    if (existingConfig) {
+      const bearerToken = await getApiToken();
+      if (!bearerToken || !secureCompare(bearerToken, existingConfig.apiToken)) {
+        return NextResponse.json(
+          { error: 'Unauthorized - invalid token' },
+          { status: 401 }
+        );
+      }
+    }
+
+    // Determine which apiToken to use:
+    // - If a valid new token is provided, use it
+    // - If updating existing config and token is masked/missing, keep existing token
+    // - If new config and no valid token, reject
+    const isTokenMasked = !apiToken || apiToken === '***';
+    const hasValidNewToken = apiToken && validateApiTokenFormat(apiToken);
+
+    let tokenToUse: string;
+    if (hasValidNewToken) {
+      tokenToUse = apiToken;
+    } else if (existingConfig && isTokenMasked) {
+      // Keep existing token for updates
+      tokenToUse = existingConfig.apiToken;
+    } else {
       return NextResponse.json(
         { error: 'Invalid or missing apiToken format' },
         { status: 400 }
       );
     }
 
-    // Get existing config or create new one
-    const existingConfig = await storage.getConfig(projectId);
     const now = new Date().toISOString();
 
     const newConfig: BackupConfig = {
       projectId,
-      apiToken,
+      apiToken: tokenToUse,
       sourceEnvironment: configUpdates?.sourceEnvironment || existingConfig?.sourceEnvironment || 'main',
       schedules: {
         daily: configUpdates?.schedules?.daily || existingConfig?.schedules?.daily || DEFAULT_SCHEDULES.daily,
