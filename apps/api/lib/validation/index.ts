@@ -72,8 +72,8 @@ export function validateProjectId(value: string | null): boolean {
 // Validate DatoCMS API token format (basic check)
 export function validateApiTokenFormat(value: string | null): boolean {
   if (!value) return false;
-  // DatoCMS tokens are typically 40+ characters, alphanumeric
-  return /^[a-zA-Z0-9]{20,}$/.test(value);
+  // DatoCMS tokens are 20+ characters, alphanumeric with optional colons for full-access tokens
+  return /^[a-zA-Z0-9:]{20,}$/.test(value);
 }
 
 // Generic sanitize string (prevent injection)
